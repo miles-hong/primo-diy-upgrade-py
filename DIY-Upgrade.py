@@ -2,6 +2,8 @@ import tkinter as tk
 import sys
 import subprocess
 import platform
+import importlib
+import re
 
 
 class Diy_Upgrade(tk.Frame):
@@ -46,7 +48,7 @@ class Diy_Upgrade(tk.Frame):
         # self.children("b0")["state"]="disabled"
         print ("welcome...")
         print ("this simple program made by: Miles, 2022-06-08 (c)")
-        print ("i will guide you to do the DIY upgrade, on Mac...")
+        print ("i will guide you to do the DIY upgrade, on Mac/Win...")
         print (" ")
         print ("First, create a folder, name it as 'primoager_1.51' on your desktop")
         print ("                                    or anywhere convenient for you.")
@@ -87,7 +89,6 @@ class Diy_Upgrade(tk.Frame):
     # #     sys.stdout.flush()
 
     def step2(self):
-        import importlib
 
         try:
             importlib.import_module('wget')
@@ -98,7 +99,7 @@ class Diy_Upgrade(tk.Frame):
             globals()['wget'] = importlib.import_module('wget')
 
         my_os = platform.system()
-        print(my_os)
+        # print(my_os)
 
         print("start downloading:primoager-v1.51.bin --------------------------------------")
         print ("... ")
@@ -107,6 +108,15 @@ class Diy_Upgrade(tk.Frame):
         print("DONE downloading:primoager-v1.51.bin --------------------------------------")
         print (" ")
         print (" ")
+
+        print("start downloading:primoager-v1.51.bin --------------------------------------")
+        print ("... ")
+        wget.download("https://github.com/miles-hong/primo-ager/raw/main/primoager-1.5-display-v1.02.tft", "primoager-1.5-display-v1.02.tft",bar=self.bar_progress)
+        print ("... ")
+        print("DONE downloading:primoager-1.5-display-v1.02.tft ---------------------------")
+        print (" ")
+        print (" ")
+
 
         if (my_os == "Windows"):
             print("start downloading USB driver for Windows: -----------------------------------")
@@ -122,47 +132,81 @@ class Diy_Upgrade(tk.Frame):
             print ("...")
             print("DONE downloading: Mac_OSX_VCP_Driver.zip -----------------------------------")
 
-
-        # print (" ")
-        # print (" ")
-        # print (" ")
+        print (" ")
+        print (" ")
+        print (" ")
         print ("=================================================================== done, step 2")
 
     def step3(self):
-        sys.stderr.write(" go to the folder, double click  'Mac_OSX_VCP_Driver.zip'")
         print (" ")
-        sys.stderr.write(" extract and run 'SiLabsUSBDriverDisk.dmg'")
         print (" ")
-        sys.stderr.write(" follow the steps to install the USB/UART driver")
+        print (" ")
+        print ("Please go the folder, ")
+        my_os = platform.system()
+        if (my_os == "Windows"):
+            print(" go to the folder, double click  'CP210x_Windows_Drivers.zip'")
+            print (" extract and install the USB driver")
+
+        if (my_os == "Darwin"):
+            print(" go to the folder, double click  'Mac_OSX_VCP_Driver.zip'")
+            print (" extract and run 'SiLabsUSBDriverDisk.dmg'")
+
+        print (" ")
+        print (" ")
+        print (" follow the steps to install the USB/UART driver")
         print (" ")
 
-        print ("=================================================================== done, step 3")
+        print ("... ")
+        print ("... ")
+        print ("... ")
+        print ("After the driver was installed, connect an USB cable to the CPU ")
+        print ("Note: the USB cable must be a DATA cable, ")
+        print ("      NOT a power-charging-only cable.")
+        print (" ")
+        print (" ")
+
+        print ("=============================================== if that is done, go to next step")
+        print (" ")
+        print (" ")
+        print ("We are ready to flash the CPU,")
+        print ("Please note: the flashing process may take about 60 seconds,")
+        print ("")
+        print ("press the button 4.Flash and wait...")
 
     def step4(self):
-        import esptool
-        sys.stderr.write(" main issue, get the USB port /dev/USB#### ")
-        print (" ")
-        sys.stderr.write(" reminder: remove all USB devices ")
-        print (" ")
-        sys.stderr.write(" reminder: connect only CPU to USB port ")
-        print (" ")
-        sys.stderr.write(" auto flash ")
-        print (" ")
-        # esptool.detect_chip()
 
-        ports = esptool.get_port_list()
-        for port in ports:
-            print(port)
+        try:
+            importlib.import_module('esptool')
+        except ImportError:
+            print('import error caught')
+            subprocess.check_call([sys.executable, "-m", "pip", "install", "esptool"])
+        finally:
+            globals()['esptool'] = importlib.import_module('esptool')
+
+        # detect and list usb com port ready, if not quit and show error
+
+        try:
+            # print(esptool.detect_chip())
+
+            # ports = esptool.get_port_list()
+            # for port in ports:
+            #     print(port)
+
+            # subprocess.check_call([sys.executable, "-m", "esptool", "--port COM3 --baud 115200 --before default_reset --after hard_reset --chip esp32 write_flash 0x10000 ./primoager-v1.51.bin"])
+            subprocess.check_call([sys.executable, "-m", "esptool", "write_flash", "0x10000", "./primoager-v1.51.bin"])
+                                                                                                                #    C:\temp\python.gui.test\primoager-v1.51.bin
+            # esptool.py --port /dev/cu.usbserial-AC01WJQX -b 921600 write_flash 0x10000 ./my_firmware.bin
+
+            # esptool.write_flash("0x10000 primoager-v1.51.bin", esp=any)
+            # -p (PORT) -b 460800 --before default_reset --after hard_reset --chip esp32  write_flash --flash_mode dio --flash_size detect --flash_freq 40m  0x10000 primoager-v1.51.bin
+            print ("=========================================================flash done, step 4")
+        except:
+            sys.stderr.write("Cannot flash the CPU")
 
 
-        # subprocess.check_call([sys.executable, "-m", "esptool", "--port COM3 --baud 115200 --before default_reset --after hard_reset --chip esp32 write_flash 0x10000 ./primoager-v1.51.bin"])
-        subprocess.check_call([sys.executable, "-m", "esptool", "write_flash", "0x10000", "./primoager-v1.51.bin"])
-                                                                                                            #    C:\temp\python.gui.test\primoager-v1.51.bin
-        # esptool.py --port /dev/cu.usbserial-AC01WJQX -b 921600 write_flash 0x10000 ./my_firmware.bin
-
-        # esptool.write_flash("0x10000 primoager-v1.51.bin", esp=any)
-        # -p (PORT) -b 460800 --before default_reset --after hard_reset --chip esp32  write_flash --flash_mode dio --flash_size detect --flash_freq 40m  0x10000 primoager-v1.51.bin
-        print ("=================================================================== done, step 4")
+    def step5(self):
+        print("please check you monitor display.")
+        print("if all steps completed, please flash your display monitor program.")
 
     def print_stderr(self):
         sys.stderr.write("this is stderr\n")
@@ -183,19 +227,17 @@ class TextRedirector(object):
 
 
 
-
+# =======================================================================================================
 
 root = tk.Tk()
 
 my_os = platform.system()
 if (my_os == "Windows"):
     root.title("Primo Ager DIY Upgrade 1.51 --- for Windows --- //miles")
-# if (my_os == )
+if (my_os == "Darwin"):
+    root.title("Primo Ager DIY Upgrade 1.51 --- for Mac --- //miles")
 
 # root.winfo_toplevel().title="Simple Prog"
 Diy_Upgrade(root).pack(expand=True, fill='both')
 root.mainloop()
 
-
-# app = ExampleApp()
-# app.mainloop()
