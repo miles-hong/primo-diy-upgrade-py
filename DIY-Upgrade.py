@@ -1,7 +1,7 @@
 import tkinter as tk
 import sys
 import subprocess
-
+import platform
 
 
 class Diy_Upgrade(tk.Frame):
@@ -79,36 +79,53 @@ class Diy_Upgrade(tk.Frame):
 
         print ("=================================================================== done, step 1")
 
-    #create this bar_progress method which is invoked automatically from wget
+    # create this bar_progress method which is invoked automatically from wget
     def bar_progress(self, current, total, width=80):
         progress_message = "Downloading: %d%% [%d / %d] bytes " % (current / total * 100, current, total)
-        # Don't use print() as it will print in new line every time.
+    #     # Don't use print() as it will print in new line every time.
         sys.stdout.write("\r\n" + progress_message)
-    #     sys.stdout.flush()
+    # #     sys.stdout.flush()
 
     def step2(self):
-        import wget
+        import importlib
+
+        try:
+            importlib.import_module('wget')
+        except ImportError:
+            print('import error caught')
+            subprocess.check_call([sys.executable, "-m", "pip", "install", "wget"])
+        finally:
+            globals()['wget'] = importlib.import_module('wget')
+
+        my_os = platform.system()
+        print(my_os)
 
         print("start downloading:primoager-v1.51.bin --------------------------------------")
         print ("... ")
-        wget.download("https://github.com/miles-hong/primo-ager/raw/main/primoager-v1.51.bin","primoager-v1.51.bin",bar=self.bar_progress)
+        wget.download("https://github.com/miles-hong/primo-ager/raw/main/primoager-v1.51.bin", "primoager-v1.51.bin",bar=self.bar_progress)
         print ("... ")
         print("DONE downloading:primoager-v1.51.bin --------------------------------------")
         print (" ")
         print (" ")
 
-        print("start downloading:Mac_OSX_VCP_Driver.zip -----------------------------------")
-        print ("...")
-        wget.download("https://www.silabs.com/documents/public/software/Mac_OSX_VCP_Driver.zip","Mac_OSX_VCP_Driver.zip",bar=self.bar_progress)
-        print ("...")
-        print("DONE downloading:Mac_OSX_VCP_Driver.zip -----------------------------------")
+        if (my_os == "Windows"):
+            print("start downloading USB driver for Windows: -----------------------------------")
+            print ("...")
+            wget.download("https://www.silabs.com/documents/public/software/CP210x_Windows_Drivers.zip", "CP210x_Windows_Drivers.zip", bar=self.bar_progress)
+            print ("...")
+            print("DONE downloading: CP210x_Windows_Drivers.zip -----------------------------------")
 
-        # self.entry.delete(0,'end')
-        # sys.stdout.flush()
+        if (my_os == "Darwin"):
+            print("start downloading USB driver for Mac: -----------------------------------")
+            print ("...")
+            wget.download("https://www.silabs.com/documents/public/software/Mac_OSX_VCP_Driver.zip", "Mac_OSX_VCP_Driver.zip", bar=self.bar_progress)
+            print ("...")
+            print("DONE downloading: Mac_OSX_VCP_Driver.zip -----------------------------------")
 
-        print (" ")
-        print (" ")
-        print (" ")
+
+        # print (" ")
+        # print (" ")
+        # print (" ")
         print ("=================================================================== done, step 2")
 
     def step3(self):
@@ -169,7 +186,12 @@ class TextRedirector(object):
 
 
 root = tk.Tk()
-root.title("Primo Ager DIY Upgrade 1.51 --- for Mac --- //miles")
+
+my_os = platform.system()
+if (my_os == "Windows"):
+    root.title("Primo Ager DIY Upgrade 1.51 --- for Windows --- //miles")
+# if (my_os == )
+
 # root.winfo_toplevel().title="Simple Prog"
 Diy_Upgrade(root).pack(expand=True, fill='both')
 root.mainloop()
