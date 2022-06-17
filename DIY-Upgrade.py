@@ -3,7 +3,6 @@ import sys
 import subprocess
 import platform
 import importlib
-import re
 
 
 class Diy_Upgrade(tk.Frame):
@@ -21,7 +20,7 @@ class Diy_Upgrade(tk.Frame):
         b2 = tk.Button(self, text="2. GetFiles", command=self.step2)
         b3 = tk.Button(self, text="   3. USB  ", command=self.step3)
         b4 = tk.Button(self, text=" 4. Flash  ", command=self.step4)
-        b5 = tk.Button(self, text=" 5. Check  ", command=self.print_stderr)
+        b5 = tk.Button(self, text=" 5. Check  ", command=self.step5)
 
         b0.pack(in_=toolbar, side="left")
         b1.pack(in_=toolbar, side="left")
