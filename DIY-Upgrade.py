@@ -232,9 +232,9 @@ root = tk.Tk()
 
 my_os = platform.system()
 if (my_os == "Windows"):
-    root.title("Primo Ager DIY Upgrade 1.51 --- for Windows --- //miles")
+    root.title("Primo Ager DIY Upgrade 1.51 --- for Windows --- //miles V1.01")
 if (my_os == "Darwin"):
-    root.title("Primo Ager DIY Upgrade 1.51 --- for Mac --- //miles")
+    root.title("Primo Ager DIY Upgrade 1.51 --- for Mac --- //miles V1.01")
 
 # root.winfo_toplevel().title="Simple Prog"
 Diy_Upgrade(root).pack(expand=True, fill='both')
