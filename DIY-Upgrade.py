@@ -5,7 +5,7 @@ import platform
 # import importlib
 import os
 
-VersionNo = "1.03"
+VersionNo = "1.04"
 
 
 
