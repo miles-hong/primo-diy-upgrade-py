@@ -107,6 +107,9 @@ class Diy_Upgrade(tk.Frame):
 	def step2(self):
 
 		my_os = platform.system()
+		get1 = False
+		get2 = False
+		get3 = False
 		if (my_os == "Windows"):
 			import ssl
 			ssl._create_default_https_context = ssl._create_unverified_context
@@ -120,6 +123,7 @@ class Diy_Upgrade(tk.Frame):
 				print("DONE downloading:primoager-v1.51.bin --------------------------------------")
 				print (" ")
 				print (" ")
+				get1 = True
 			except:
 				sys.stderr.write("cannot use wget to download primoager-v1.51.bin\n")
 
@@ -131,6 +135,7 @@ class Diy_Upgrade(tk.Frame):
 				print("DONE downloading:primoager-1.5-display-v1.02.tft ---------------------------")
 				print (" ")
 				print (" ")
+				get2 = True
 			except:
 				sys.stderr.write("cannot use wget to download primoager-1.5-display-v1.02.tft\n")
 
@@ -140,15 +145,11 @@ class Diy_Upgrade(tk.Frame):
 				wget.download("https://www.silabs.com/documents/public/software/CP210x_Windows_Drivers.zip", "CP210x_Windows_Drivers.zip" , bar=self.bar_progress)
 				print ("...")
 				print("DONE downloading: CP210x_Windows_Drivers.zip -----------------------------------")
+				get3 = True
 			except:
 				sys.stderr.write("cannot use wget to download the driver for OS: " + my_os + "\n")
 
 
-			print (" ")
-			print (" ")
-			print (" ")
-
-			print ("=================================================================== done, step 2")
 
 		if (my_os == "Darwin"):
 			try:
@@ -167,6 +168,7 @@ class Diy_Upgrade(tk.Frame):
 					print("DONE downloading:primoager-v1.51.bin --------------------------------------")
 					print (" ")
 					print (" ")
+					get1 = True
 				except:
 					sys.stderr.write("cannot use download to download primoager-v1.51.bin\n")
 
@@ -178,6 +180,7 @@ class Diy_Upgrade(tk.Frame):
 					print("DONE downloading:primoager-1.5-display-v1.02.tft ---------------------------")
 					print (" ")
 					print (" ")
+					get2 = True
 				except:
 					sys.stderr.write("cannot use download to download primoager-1.5-display-v1.02.tft\n")
 
@@ -187,12 +190,23 @@ class Diy_Upgrade(tk.Frame):
 					download.download("https://www.silabs.com/documents/public/software/Mac_OSX_VCP_Driver.zip", os.getcwd() + "/Mac_OSX_VCP_Driver.zip")
 					print ("...")
 					print("DONE downloading: Mac_OSX_VCP_Driver.zip -----------------------------------")
+					get3 = True
 				except:
 					sys.stderr.write("cannot use download to download primoager-1.5-display-v1.02.tft\n")
 			except:
 				sys.stderr.write("error before downloading files, cannot import ssl or download!!! \n")
 
 
+			print (" ")
+			print (" ")
+			print (" ")
+			if (get1 and get2 and get3):
+				print ("all required files were downloaded, please proceed to next step.")
+				print ("=================================================================== done, step 2")
+			else:
+				sys.stderr.write("There were some errors when downloading the files, please:")
+				sys.stderr.write("1. make sure the Internet connection is good")
+				sys.stderr.write("2. close this program and restart again")
 
 
 
